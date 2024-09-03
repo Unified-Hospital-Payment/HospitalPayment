@@ -24,6 +24,8 @@
     "nodemon": "^3.1.4"
   },
   "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.22.10",
     "prisma": "^5.19.1"
   }
 }
