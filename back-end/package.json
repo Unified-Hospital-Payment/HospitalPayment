@@ -1,0 +1,29 @@
+{
+  "name": "hospital-payment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Unified-Hospital-Payment/HospitalPayment.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Unified-Hospital-Payment/HospitalPayment/issues"
+  },
+  "homepage": "https://github.com/Unified-Hospital-Payment/HospitalPayment#readme",
+  "dependencies": {
+    "@prisma/client": "^5.19.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "nodemon": "^3.1.4"
+  },
+  "devDependencies": {
+    "prisma": "^5.19.1"
+  }
+}
