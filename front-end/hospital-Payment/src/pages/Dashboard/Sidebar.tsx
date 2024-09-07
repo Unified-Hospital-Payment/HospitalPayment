@@ -84,7 +84,7 @@ const Sidebar = () => {
             </li>
           </>
         )}
-        {userType === "super-admin" && (
+        {userType === "super_admin" && (
           <>
             <li>
               <Link to="/dashboard/add-hospital" className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700 transition-colors duration-200">
