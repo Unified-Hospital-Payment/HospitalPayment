@@ -44,8 +44,10 @@ const services = require("./API/Routes/services");
 const Transactions = require("./API/Routes/transactions");
 const User = require("./API/Routes/user");
 const UserLogIn = require("./API/Routes/userLogIn");
+const hospitals = require("./API/Routes/hospital")
 const app = express();
 const server = http.createServer(app);
+
 
 
 const PORT = process.env.PORT || 8001;
@@ -67,6 +69,7 @@ app.use("/services",services);
 app.use("/transactions", Transactions);
 app.use("/user", User);
 app.use("/login", UserLogIn)
+app.use("/hospital", hospitals)
 // app.get("/get-name", async (req, res) => {
 //   try {
 //     const name = await contract.name();
