@@ -15,6 +15,9 @@ import ViewAllPatients from '../modules/ViewAllPatients';
 import ViewAllServices from '../modules/ViewAllServices';
 import AddAdmin from '../modules/AddAdmin';
 import Pay from "../modules/Pay"
+import ViewAllHospitals from '../modules/ViewAllHospitals';
+import ViewAllUsers from "../modules/ViewAllUsers"
+import ViewAllAdmins from '../modules/ViewAllAdmins';
 
 const Allroutes = () => {
   return (
@@ -30,8 +33,11 @@ const Allroutes = () => {
         <Route path="/dashboard" element={<Dashboard />}>
           <Route path="pay" element={<Pay/>} />
           <Route path="add-hospital" element={<AddHospital />} />
+          <Route path="view-hospital" element={<ViewAllHospitals />} />
           <Route path="add-patient" element={<AddPatient />} />
           <Route path="add-doctor" element={<AddDoctor />} />
+          <Route path="view-users" element={<ViewAllUsers/>} />
+          <Route path="view-admins" element={<ViewAllAdmins/>} />
           <Route path="view-transactions" element={<ViewTransactions />} />
           <Route path="add-service" element={<AddService />} />
           <Route path="patients" element={<ViewAllPatients />} />
