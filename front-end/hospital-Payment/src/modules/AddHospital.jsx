@@ -7,7 +7,7 @@ const AddHospital = () => {
           <div className=" bg-white shadow-default w-[60vw]">
             <div className=" py-4 px-6.5 dark:border-strokedark">
               <h3 className="font-bold text-3xl text-black ">
-                Add a Patient
+                Add a Hospital
               </h3>
             </div>
             <form action="#">
@@ -29,10 +29,10 @@ const AddHospital = () => {
 
                 <div className="mb-4.5">
                   <label className="mb-2.5 block text-black">
-                    Email <span className="text-meta-1">*</span>
+                    Location <span className="text-meta-1">*</span>
                   </label>
                   <input
-                    type="email"
+                    type="string"
                     placeholder="Enter your email address"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black "
                   />
@@ -40,7 +40,7 @@ const AddHospital = () => {
 
                 <div className="mb-4.5">
                   <label className="mb-2.5 block text-black ">
-                    Phone
+                    Contact Info
                   </label>
                   <input
                     type="tel"

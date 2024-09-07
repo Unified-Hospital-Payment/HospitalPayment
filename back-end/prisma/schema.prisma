@@ -6,3 +6,118 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model hospital_admins {
+  id          Int        @id @default(autoincrement())
+  user_id     Int?
+  hospital_id Int?
+  created_at  DateTime?  @default(now()) @db.Timestamp(6)
+  updated_at  DateTime?  @default(now()) @db.Timestamp(6)
+  hospitals   hospitals? @relation(fields: [hospital_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users       users?     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model hospitals {
+  id              Int               @id @default(autoincrement())
+  name            String            @db.VarChar(255)
+  location        String            @db.VarChar(255)
+  paybill_number  String            @unique @db.VarChar(50)
+  contact_info    String?           @db.VarChar(255)
+  created_at      DateTime?         @default(now()) @db.Timestamp(6)
+  updated_at      DateTime?         @default(now()) @db.Timestamp(6)
+  hospital_admins hospital_admins[]
+  payments        payments[]
+  services        services[]
+  users           users[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model patient_doctor_assignments {
+  id                                                 Int       @id @default(autoincrement())
+  patient_id                                         Int?
+  doctor_id                                          Int
+  assigned_at                                        DateTime? @default(now()) @db.Timestamp(6)
+  reason                                             String?
+  status                                             String    @db.VarChar(50)
+  updated_at                                         DateTime? @default(now()) @db.Timestamp(6)
+  users_patient_doctor_assignments_doctor_idTousers  users     @relation("patient_doctor_assignments_doctor_idTousers", fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_patient_doctor_assignments_patient_idTousers users?    @relation("patient_doctor_assignments_patient_idTousers", fields: [patient_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model payments {
+  id                              Int            @id @default(autoincrement())
+  user_id                         Int?
+  hospital_id                     Int?
+  service_id                      Int?
+  amount                          Decimal        @db.Decimal(10, 2)
+  payment_status                  String         @db.VarChar(50)
+  transaction_id                  String         @unique @db.VarChar(255)
+  created_at                      DateTime?      @default(now()) @db.Timestamp(6)
+  updated_at                      DateTime?      @default(now()) @db.Timestamp(6)
+  doctor_id                       Int
+  users_payments_doctor_idTousers users          @relation("payments_doctor_idTousers", fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  hospitals                       hospitals?     @relation(fields: [hospital_id], references: [id], onUpdate: NoAction)
+  services                        services?      @relation(fields: [service_id], references: [id], onUpdate: NoAction)
+  users_payments_user_idTousers   users?         @relation("payments_user_idTousers", fields: [user_id], references: [id], onUpdate: NoAction)
+  receipts                        receipts[]
+  transactions                    transactions[]
+}
+
+model receipts {
+  id             Int       @id @default(autoincrement())
+  payment_id     Int?
+  receipt_number String    @unique @db.VarChar(255)
+  amount_paid    Decimal   @db.Decimal(10, 2)
+  issued_at      DateTime? @default(now()) @db.Timestamp(6)
+  details        String?
+  payments       payments? @relation(fields: [payment_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model services {
+  id                              Int        @id @default(autoincrement())
+  hospital_id                     Int?
+  name                            String     @db.VarChar(255)
+  description                     String?
+  price                           Decimal    @db.Decimal(10, 2)
+  created_at                      DateTime?  @default(now()) @db.Timestamp(6)
+  updated_at                      DateTime?  @default(now()) @db.Timestamp(6)
+  doctor_id                       Int
+  payments                        payments[]
+  users_services_doctor_idTousers users      @relation("services_doctor_idTousers", fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  hospitals                       hospitals? @relation(fields: [hospital_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users_services_idTousers        users      @relation("services_idTousers", fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model transactions {
+  id                Int       @id @default(autoincrement())
+  payment_id        Int?
+  blockchain_txn_id String?   @unique @db.VarChar(255)
+  block_number      String?   @db.VarChar(50)
+  timestamp         DateTime? @default(now()) @db.Timestamp(6)
+  status            String    @db.VarChar(50)
+  payments          payments? @relation(fields: [payment_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model users {
+  id                                                                      Int                          @id @default(autoincrement())
+  name                                                                    String                       @db.VarChar(255)
+  email                                                                   String                       @unique @db.VarChar(255)
+  phone_number                                                            String                       @unique @db.VarChar(20)
+  role                                                                    String                       @db.VarChar(50)
+  password_hash                                                           String
+  created_at                                                              DateTime?                    @default(now()) @db.Timestamp(6)
+  updated_at                                                              DateTime?                    @default(now()) @db.Timestamp(6)
+  hospital_id                                                             Int?
+  specialization                                                          String?                      @db.VarChar
+  hospital_admins                                                         hospital_admins[]
+  patient_doctor_assignments_patient_doctor_assignments_doctor_idTousers  patient_doctor_assignments[] @relation("patient_doctor_assignments_doctor_idTousers")
+  patient_doctor_assignments_patient_doctor_assignments_patient_idTousers patient_doctor_assignments[] @relation("patient_doctor_assignments_patient_idTousers")
+  payments_payments_doctor_idTousers                                      payments[]                   @relation("payments_doctor_idTousers")
+  payments_payments_user_idTousers                                        payments[]                   @relation("payments_user_idTousers")
+  services_services_doctor_idTousers                                      services[]                   @relation("services_doctor_idTousers")
+  services_services_idTousers                                             services?                    @relation("services_idTousers")
+  hospitals                                                               hospitals?                   @relation(fields: [hospital_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
