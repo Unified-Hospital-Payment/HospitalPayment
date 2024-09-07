@@ -77,6 +77,12 @@ const Sidebar = () => {
               </Link>
             </li>
             <li>
+              <Link to="/dashboard/patients" className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700 transition-colors duration-200">
+                <FaList className="text-xl" />
+                <span>View Patients</span>
+              </Link>
+            </li>
+            <li>
               <Link to="/dashboard/add-service" className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700 transition-colors duration-200">
                 <FaHome className="text-xl" />
                 <span>Add Services</span>
