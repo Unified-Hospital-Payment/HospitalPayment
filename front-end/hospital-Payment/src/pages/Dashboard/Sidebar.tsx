@@ -1,11 +1,11 @@
 // Sidebar.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useUserStore } from '../../store/useUserStore';
+import { useStore } from '../../store/useStore';
 import { FaHome, FaList, FaWallet, FaUserMd, FaUser, FaHospital, FaUserPlus } from 'react-icons/fa'; // Additional icons
 
 const Sidebar = () => {
-  const { userType } = useUserStore(); // Destructure userType from the store
+  const { userType } = useStore(); // Destructure userType from the store
 
   return (
     <div className="h-screen w-64 bg-[#500085] text-white p-7 shadow-lg">
@@ -82,6 +82,12 @@ const Sidebar = () => {
                 <span>Add Services</span>
               </Link>
             </li>
+            <li>
+              <Link to="/dashboard/view-users" className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700 transition-colors duration-200">
+                <FaHome className="text-xl" />
+                <span>View All Users</span>
+              </Link>
+            </li>
           </>
         )}
         {userType === "super_admin" && (
@@ -90,6 +96,18 @@ const Sidebar = () => {
               <Link to="/dashboard/add-hospital" className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700 transition-colors duration-200">
                 <FaHospital className="text-xl" />
                 <span>Add Hospitals</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/dashboard/view-hospital" className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700 transition-colors duration-200">
+                <FaHospital className="text-xl" />
+                <span>View All Hospitals</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/dashboard/view-admins" className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700 transition-colors duration-200">
+                <FaHospital className="text-xl" />
+                <span>View All Admins</span>
               </Link>
             </li>
             <li>
