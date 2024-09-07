@@ -5,7 +5,12 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(125% 125% at 50% 10%, var(--tw-gradient-stops))',
+      },
   },
+},
   plugins: [],
 }
