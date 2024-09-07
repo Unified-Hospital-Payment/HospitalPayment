@@ -86,6 +86,12 @@ const Sidebar = () => {
         )}
         {userType === "super-admin" && (
           <>
+          <li>
+              <Link to="/dashboard/view-hospitals" className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700 transition-colors duration-200">
+                <FaHospital className="text-xl" />
+                <span>View Hospitals</span>
+              </Link>
+            </li>
             <li>
               <Link to="/dashboard/add-hospital" className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700 transition-colors duration-200">
                 <FaHospital className="text-xl" />

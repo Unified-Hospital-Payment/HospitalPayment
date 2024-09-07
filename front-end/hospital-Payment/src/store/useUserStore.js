@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
 export const useUserStore = create((set) => ({
-    userType: "hospital_admin",
+    userType: "super-admin",
     setUserType:(user => set({user}))
 }));

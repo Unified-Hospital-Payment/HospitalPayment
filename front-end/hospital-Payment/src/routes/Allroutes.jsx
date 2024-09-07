@@ -13,6 +13,7 @@ import ViewTransactions from '../modules/ViewTransactions';
 import AddService from '../modules/AddService';
 import ViewAllPatients from '../modules/ViewAllPatients';
 import ViewAllServices from '../modules/ViewAllServices';
+import ViewAllHospitals from '../modules/ViewAllHospitals';
 import AddAdmin from '../modules/AddAdmin';
 import Pay from "../modules/Pay"
 
@@ -33,6 +34,7 @@ const Allroutes = () => {
           <Route path="add-patient" element={<AddPatient />} />
           <Route path="add-doctor" element={<AddDoctor />} />
           <Route path="view-transactions" element={<ViewTransactions />} />
+          <Route path="view-hospitals" element={<ViewAllHospitals />} />
           <Route path="add-service" element={<AddService />} />
           <Route path="patients" element={<ViewAllPatients />} />
           <Route path="services" element={<ViewAllServices />} />
