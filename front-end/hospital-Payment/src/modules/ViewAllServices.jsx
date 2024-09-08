@@ -34,7 +34,7 @@ const ViewAllServices = () => {
           <h3 className="font-bold text-3xl text-black">All Services</h3>
           <button
             onClick={handleAddService}
-            className="bg-[#500085] text-white font-medium py-2 px-4 rounded-lg hover:bg-[#500085] transition"
+            className="bg-[#500085] text-white font-medium py-2 px-4 rounded-lg hover:bg-[#400066] transition"
           >
             Add Service
           </button>

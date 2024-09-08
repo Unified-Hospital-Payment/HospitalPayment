@@ -7,8 +7,9 @@ async function addServices(req, res, next) {
             name,
             description,
             price,
-            doctor_id  // Include this field in the request body
-        } = req.body;
+            category_id
+
+        } = req.body
 
         // Ensure all required fields are provided
         if (!doctor_id) {
@@ -17,11 +18,11 @@ async function addServices(req, res, next) {
 
         const doc = await prisma.services.create({
             data: {
-                hospital_id,
-                name,
-                description,
-                price: parseFloat(price), // Ensure price is a number
-                doctor_id, // Add this to satisfy the required field
+            hospital_id ,
+            name,
+            description,
+            price,
+            category_id
             }
         });
 
