@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
 import { getAllUsers } from '../api/api'; 
 
 const ViewAllPatients = () => {
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate(); // Initialize useNavigate hook
 
   useEffect(() => {
     const fetchPatients = async () => {
@@ -22,12 +24,24 @@ const ViewAllPatients = () => {
     fetchPatients();
   }, []);
 
+  const handleButtonClick = () => {
+    navigate('/dashboard/add-patient'); // Replace with the correct route for adding patients
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">All Patients</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold">All Patients</h2>
+        <button
+          className="bg-[#500085] text-white font-medium py-2 px-4 rounded-lg hover:bg-[#500085] transition"
+          onClick={handleButtonClick}
+        >
+          Add Patient
+        </button>
+      </div>
       {patients.length === 0 ? (
         <p>No patients found.</p>
       ) : (

@@ -37,7 +37,7 @@ const Sidebar = () => {
         {userType === "doctor" && (
           <>
             <li>
-              <Link to="/dashboard/add-service" className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700 transition-colors duration-200">
+              <Link to="/dashboard/add-service-to-patient" className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700 transition-colors duration-200">
                 <FaUserMd className="text-xl" />
                 <span>Add a Service to a Patient</span>
               </Link>
@@ -49,7 +49,7 @@ const Sidebar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/dashboard/services" className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700 transition-colors duration-200">
+              <Link to="/dashboard/view-services" className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700 transition-colors duration-200">
                 <FaHome className="text-xl" />
                 <span>View All Services</span>
               </Link>
@@ -70,6 +70,7 @@ const Sidebar = () => {
                 <span>Add Doctors</span>
               </Link>
             </li>
+            
             <li>
               <Link to="/dashboard/view-transactions" className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700 transition-colors duration-200">
                 <FaList className="text-xl" />
@@ -80,6 +81,12 @@ const Sidebar = () => {
               <Link to="/dashboard/add-service" className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700 transition-colors duration-200">
                 <FaHome className="text-xl" />
                 <span>Add Services</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/dashboard/view-services" className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700 transition-colors duration-200">
+                <FaHome className="text-xl" />
+                <span>View All Services</span>
               </Link>
             </li>
             <li>

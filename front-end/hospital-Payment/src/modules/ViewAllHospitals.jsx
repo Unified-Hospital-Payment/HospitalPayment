@@ -1,11 +1,13 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { fetchAllHospitals } from '../api/api';
-import {useStore} from "../store/useStore"
+import { useStore } from '../store/useStore';
 
 const ViewAllHospitals = () => {
-    const {hospitals, setHospitals} = useStore()
+  const { hospitals, setHospitals } = useStore();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate(); // Initialize useNavigate hook
 
   useEffect(() => {
     const getHospitals = async () => {
@@ -22,12 +24,24 @@ const ViewAllHospitals = () => {
     getHospitals();
   }, [setHospitals]);
 
+  const handleButtonClick = () => {
+    navigate('/dashboard/add-hospital'); // Replace with the desired route
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">All Hospitals</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">All Hospitals</h1>
+        <button
+          className="bg-[#500085] text-white font-medium py-2 px-4 rounded-lg hover:bg-[#500085] transition"
+          onClick={handleButtonClick}
+        >
+          Add Hospital
+        </button>
+      </div>
       <table className="min-w-full bg-white border border-gray-200">
         <thead>
           <tr>

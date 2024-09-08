@@ -1,9 +1,10 @@
-require("dotenv").config();
-const jwt = require("jsonwebtoken");
+// Auth/index.js
 
-function generateAccessToken(doc, exp = 12) {
-  return jwt.sign(doc, process.env.BEARER, { expiresIn: `${exp}hr` });
-}
+const jwt = require('jsonwebtoken');
+
+const generateAccessToken = (user) => {
+  const secretKey = process.env.JWT_SECRET || 'defaultSecretKey'; // Set JWT_SECRET in your env variables
+  return jwt.sign(user, secretKey, { expiresIn: '80000s' });
+};
 
 module.exports = { generateAccessToken };
-

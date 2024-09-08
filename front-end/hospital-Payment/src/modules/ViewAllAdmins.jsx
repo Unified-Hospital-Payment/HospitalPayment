@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getAllUsers } from '../api/api'; // Update the import path if necessary
 
 const ViewAllAdmins = () => {
   const [admins, setAdmins] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAdmins = async () => {
@@ -22,12 +24,24 @@ const ViewAllAdmins = () => {
     fetchAdmins();
   }, []);
 
+  const handleButtonClick = () => {
+    navigate('/dashboard/add-admin'); // Replace '/other-page' with the desired route
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">All Hospital Admins</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold">All Hospital Admins</h2>
+        <button
+          className="bg-[#500085] text-white font-medium py-2 px-4 rounded-lg hover:bg-[#500085] transition"
+          onClick={handleButtonClick}
+        >
+          Add Admins
+        </button>
+      </div>
       {admins.length === 0 ? (
         <p>No hospital administrators found.</p>
       ) : (

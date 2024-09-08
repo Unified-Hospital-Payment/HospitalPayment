@@ -18,6 +18,7 @@ import Pay from "../modules/Pay"
 import ViewAllHospitals from '../modules/ViewAllHospitals';
 import ViewAllUsers from "../modules/ViewAllUsers"
 import ViewAllAdmins from '../modules/ViewAllAdmins';
+import AddServiceToPatient from '../modules/AddServiceToPatient';
 
 const Allroutes = () => {
   return (
@@ -41,8 +42,9 @@ const Allroutes = () => {
           <Route path="view-transactions" element={<ViewTransactions />} />
           <Route path="add-service" element={<AddService />} />
           <Route path="patients" element={<ViewAllPatients />} />
-          <Route path="services" element={<ViewAllServices />} />
+          <Route path="view-services" element={<ViewAllServices />} />
           <Route path="add-admin" element={<AddAdmin />} />
+          <Route path="add-service-to-patient" element={<AddServiceToPatient/>} />
         </Route>
       </Routes>
     </Router>

@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { fetchAllServices } from '../api/api';
 
 const ViewAllServices = () => {
   const [services, setServices] = useState([]);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -12,21 +15,35 @@ const ViewAllServices = () => {
         setServices(data);
       } catch (err) {
         setError('Failed to fetch services: ' + err.message);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
   }, []);
 
+  const handleAddService = () => {
+    navigate('/dashboard/add-service');
+  };
+
   return (
     <div className="flex flex-col gap-9 mt-20">
       <div className="bg-white shadow-default w-[60vw]">
-        <div className="py-4 px-6.5 dark:border-strokedark">
+        <div className="py-4 px-6.5 dark:border-strokedark flex justify-between items-center">
           <h3 className="font-bold text-3xl text-black">All Services</h3>
+          <button
+            onClick={handleAddService}
+            className="bg-[#500085] text-white font-medium py-2 px-4 rounded-lg hover:bg-[#500085] transition"
+          >
+            Add Service
+          </button>
         </div>
         {error && <p className="text-red-500 px-6.5">{error}</p>}
         <div className="p-6.5">
-          {services.length === 0 ? (
+          {loading ? (
+            <p>Loading services...</p>
+          ) : services.length === 0 ? (
             <p>No services available.</p>
           ) : (
             <table className="w-full border-collapse">

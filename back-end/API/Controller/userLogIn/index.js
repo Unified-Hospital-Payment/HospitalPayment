@@ -8,40 +8,31 @@ const Login = async (req, res, next) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-        throw { custom: true, message: "Email and password are required" };
-      }
-  
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        throw { custom: true, message: "Invalid email format" };
-      }
-    let user = await prisma.users.findUnique({
+      throw { custom: true, message: "Email and password are required" };
+    }
+
+    const user = await prisma.users.findUnique({
       where: { email: email }
     });
 
-    
-    if (! user) {
-      throw { custom: true, message: `User with ${email} doesn't exist` };
+    if (!user) {
+      throw { custom: true, message: `User with email ${email} doesn't exist` };
     }
 
-    if (!email || !password) {
-        throw { custom: true, message: "Email and password are required" };
-      }
-  
-  
-    const hashedPassword = await bcrypt.compare(password,  user.password_hash);
-    
-    if (!hashedPassword) {
+    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+
+    if (!isPasswordValid) {
       throw { custom: true, message: "Invalid password" };
     }
 
-    user.password = "#############";
+    const token = generateAccessToken({ id: user.id, email: user.email });
 
-    let token = generateAccessToken(user);
-
-    return res.status(200).json({ ...user, token });
+    res.status(200).json({ user, token });
   } catch (e) {
     next(e);
   }
 };
 
 module.exports = Login;
+
+

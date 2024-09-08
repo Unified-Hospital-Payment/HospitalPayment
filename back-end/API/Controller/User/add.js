@@ -9,10 +9,12 @@ async function addUser(req, res, next){
             email,
             phone_number,
             role, 
-            password_hash
+            password_hash,
+            hospital_id,
+            specialization
         } = req.body
 
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        const hashedPassword = await bcrypt.hash(password_hash, saltRounds);
 
 
         const doc = await prisma.users.create({
@@ -21,9 +23,11 @@ async function addUser(req, res, next){
                 email:email,
                 phone_number:phone_number,
                 role:role, 
-                password:hashedPassword 
+                password_hash:hashedPassword,
+                hospital_id:hospital_id,
+                specialization:specialization 
             }
-        });
+        }); 
         return res.status(201).json(doc); 
 
     } catch (error) {
