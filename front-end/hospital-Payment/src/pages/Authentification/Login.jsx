@@ -1,8 +1,7 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import Navbar from '../Authentification/Navbar'
 import { useStore } from "../../store/useStore"
-import axios from 'axios'
 import { login } from '../../api/api';
 
 
@@ -12,7 +11,7 @@ const Login = () => {
     password: ''
   })
   const navigate = useNavigate()
-  const { setUserType } = useStore()
+  const { setUserType, setUserId } = useStore()
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -27,6 +26,7 @@ const Login = () => {
   
       // Set user type based on the role in the response
       setUserType(data.user.role);
+      setUserId(data.user.id)
   
       // Store the token in localStorage or state
       localStorage.setItem('token', data.token);

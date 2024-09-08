@@ -141,6 +141,7 @@ const Transactions = require("./API/Routes/transactions");
 const User = require("./API/Routes/user");
 const UserLogIn = require("./API/Routes/userLogIn");
 const category = require("./API/Routes/category")
+const hospitals = require("./API/Routes/hospital")
 const app = express();
 const server = http.createServer(app);
 
@@ -165,6 +166,8 @@ app.use("/transactions", Transactions);
 app.use("/user", User);
 app.use("/login", UserLogIn)
 app.use("/category", category)
+app.use("/hospital", hospitals)
+
 
 
 app.get('/get-payment/:id', async (req, res) => {

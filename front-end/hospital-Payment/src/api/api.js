@@ -68,3 +68,20 @@ export const login = async (loginData) => {
     throw new Error('Error logging in: ' + error.message);
   }
 };
+
+
+export const addPatientConsultation = async (data) => {
+  try {
+    // Make a POST request to the API endpoint
+    const response = await axios.post(`${APP_URL}/patientConsultation/add`, data, {
+      headers: {
+        'Content-Type': 'application/json',
+        // Include any other headers if needed (e.g., Authorization)
+      }
+    });
+    return response.data;  // Return the response data from the API
+  } catch (error) {
+    console.error('Error adding patient consultation:', error);
+    throw error;  // Rethrow the error to be handled by the calling code
+  }
+};
