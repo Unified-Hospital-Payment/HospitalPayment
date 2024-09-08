@@ -1,6 +1,6 @@
 // scripts/deploy.js
-async function main() {
-    const MyContract = await ethers.getContractFactory("Payments");
+async function mytoken() {
+    const MyContract = await ethers.getContractFactory("MyToken");
     const myContract = await MyContract.deploy();
   
     console.log("Contract deployed to address:", myContract.address);

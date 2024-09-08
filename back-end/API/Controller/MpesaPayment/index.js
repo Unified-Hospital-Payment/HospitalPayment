@@ -1,12 +1,15 @@
 const axios = require('axios');
 const moment = require('moment');
 const fs = require('fs');
+const prisma = require('../../DB/Prisma');
+const { createBlockchainPayment, completeBlockchainPayment } = require('../../services/blockchainService');
+const { v4: uuidv4 } = require('uuid');
 
+// Function to get M-Pesa access token
 async function getAccessToken() {
-  const consumer_key = process.env.CONSUMER_KEY; 
+  const consumer_key = process.env.CONSUMER_KEY;
   const consumer_secret = process.env.CONSUMER_SECRET;
   const url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
-
   const auth = "Basic " + new Buffer.from(consumer_key + ":" + consumer_secret).toString("base64");
 
   try {
@@ -21,11 +24,29 @@ async function getAccessToken() {
   }
 }
 
+// Function to initiate STK Push
 async function stkPush(req, res) {
-  const { phone, accountNumber, amount } = req.body;
-  let phoneNumber = phone.startsWith("0") ? "254" + phone.slice(1) : phone;
-
   try {
+    const { phone, accountNumber, amount, userId, hospitalId, serviceId, doctorId } = req.body;
+    let phoneNumber = phone.startsWith("0") ? "254" + phone.slice(1) : phone;
+
+    // Generate a temporary transaction ID
+    const tempTransactionId = uuidv4();
+
+    // Create a new payment record in the database with the temporary ID
+    const payment = await prisma.payments.create({
+      data: {
+        user_id: userId,
+        hospital_id: hospitalId,
+        service_id: serviceId,
+        amount: parseFloat(amount),
+        payment_status: 'pending',
+        transaction_id: tempTransactionId,
+        doctor_id: doctorId,
+      },
+    });
+
+    // Get M-Pesa access token
     const accessToken = await getAccessToken();
     const url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
     const auth = "Bearer " + accessToken;
@@ -34,6 +55,7 @@ async function stkPush(req, res) {
       "174379" + "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919" + timestamp
     ).toString("base64");
 
+    // Initiate STK Push request
     const response = await axios.post(url, {
       BusinessShortCode: "174379",
       Password: password,
@@ -52,39 +74,108 @@ async function stkPush(req, res) {
       },
     });
 
+    if (response.data.ResponseCode !== "0") {
+      // If STK push fails, update the payment status
+      await prisma.payments.update({
+        where: { id: payment.id },
+        data: { payment_status: 'failed' },
+      });
+      return res.status(400).json({ error: "STK Push failed", details: response.data });
+    }
+
+    // Update the payment record with the actual CheckoutRequestID
+    await prisma.payments.update({
+      where: { id: payment.id },
+      data: { transaction_id: response.data.CheckoutRequestID },
+    });
+
+    // Create blockchain payment
+    const blockchainTxHash = await createBlockchainPayment(payment.id, amount, response.data.CheckoutRequestID);
+
+    // Create transaction record
+    await prisma.transactions.create({
+      data: {
+        payment_id: payment.id,
+        blockchain_txn_id: blockchainTxHash,
+        status: 'pending',
+      },
+    });
+
     res.status(200).json({
-      msg: "Request is successful. Please enter M-Pesa PIN to complete the transaction",
-      status: true,
+      message: "STK push initiated successfully",
+      checkoutRequestID: response.data.CheckoutRequestID,
     });
 
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      msg: "Request failed",
-      status: false,
-    });
+    console.error('Error in stkPush:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
 
-function stkPushCallback(req, res) {
+// Function to handle STK Push callback
+async function stkPushCallback(req, res) {
   const { Body: { stkCallback } } = req.body;
   const { MerchantRequestID, CheckoutRequestID, ResultCode, ResultDesc, CallbackMetadata } = stkCallback;
 
-  console.log("MerchantRequestID:", MerchantRequestID);
-  console.log("CheckoutRequestID:", CheckoutRequestID);
-  console.log("ResultCode:", ResultCode);
-  console.log("ResultDesc:", ResultDesc);
+  try {
+    // Find the payment record
+    const payment = await prisma.payments.findUnique({
+      where: { transaction_id: CheckoutRequestID },
+    });
 
-  const json = JSON.stringify(req.body);
-  fs.writeFile("stkcallback.json", json, "utf8", (err) => {
-    if (err) {
-      console.error("Error saving callback:", err);
-    } else {
-      console.log("STK PUSH CALLBACK STORED SUCCESSFULLY");
+    if (!payment) {
+      throw new Error('Payment not found');
     }
-  });
 
-  res.sendStatus(200);
+    if (ResultCode === 0) {
+      // Transaction successful
+      const amount = CallbackMetadata.Item.find(item => item.Name === 'Amount').Value;
+      const mpesaReceiptNumber = CallbackMetadata.Item.find(item => item.Name === 'MpesaReceiptNumber').Value;
+
+      // Update payment status
+      await prisma.payments.update({
+        where: { id: payment.id },
+        data: { payment_status: 'completed' },
+      });
+
+      // Create receipt
+      await prisma.receipts.create({
+        data: {
+          payment_id: payment.id,
+          receipt_number: mpesaReceiptNumber,
+          amount_paid: amount,
+          details: 'M-Pesa payment',
+        },
+      });
+
+      // Complete blockchain payment
+      const blockchainTxHash = await completeBlockchainPayment(payment.id);
+
+      // Update transaction status
+      await prisma.transactions.update({
+        where: { payment_id: payment.id },
+        data: {
+          status: 'completed',
+          block_number: await provider.getBlockNumber(),
+        },
+      });
+    } else {
+      // Transaction failed
+      await prisma.payments.update({
+        where: { id: payment.id },
+        data: { payment_status: 'failed' },
+      });
+      await prisma.transactions.update({
+        where: { payment_id: payment.id },
+        data: { status: 'failed' },
+      });
+    }
+
+    res.status(200).json({ ResultCode, ResultDesc });
+  } catch (error) {
+    console.error('Error processing callback:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 }
 
 module.exports = {

@@ -1,40 +1,136 @@
 const express = require('express');
 const cors = require('cors');
 const http = require('http');
-// const { ethers } = require("ethers");
+const { ethers } = require("ethers");
 
-// const provider = new ethers.JsonRpcProvider("http://localhost:8545"); // Use your network URL
-// const contractAddress = "0x5fbdb2315678afecb367f032d93f642f64180aa3";
-// const abi = [ 
-//   {
-//   "inputs": [],
-//   "name": "name",
-//   "outputs": [
-//     {
-//       "internalType": "string",
-//       "name": "",
-//       "type": "string"
-//     }
-//   ],
-//   "stateMutability": "view",
-//   "type": "function"
-// },
-// {
-//   "inputs": [
-//     {
-//       "internalType": "string",
-//       "name": "newName",
-//       "type": "string"
-//     }
-//   ],
-//   "name": "setName",
-//   "outputs": [],
-//   "stateMutability": "nonpayable",
-//   "type": "function"
-// }
-// ];
+const provider = new ethers.JsonRpcProvider("http://localhost:8545"); // Use your network URL
+const contractAddress = "0x5fbdb2315678afecb367f032d93f642f64180aa3";
+const abi= [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_id",
+          "type": "uint256"
+        }
+      ],
+      "name": "completePayment",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "_transactionId",
+          "type": "string"
+        }
+      ],
+      "name": "createPayment",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_id",
+          "type": "uint256"
+        }
+      ],
+      "name": "getPayment",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "payer",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "status",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "transactionId",
+              "type": "string"
+            }
+          ],
+          "internalType": "struct Payments.Payment",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "payments",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "payer",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "status",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "transactionId",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ]
 
-// const contract = new ethers.Contract(contractAddress, abi, provider);
+
+const contract = new ethers.Contract(contractAddress, abi, provider);
 const handlePayment = require("./API/Routes/HandlePayment");
 const hospitalAdmin = require("./API/Routes/hospitalAdmins");
 const patientConsultation = require("./API/Routes/patientConsultations");
@@ -44,10 +140,8 @@ const services = require("./API/Routes/services");
 const Transactions = require("./API/Routes/transactions");
 const User = require("./API/Routes/user");
 const UserLogIn = require("./API/Routes/userLogIn");
-const hospitals = require("./API/Routes/hospital")
 const app = express();
 const server = http.createServer(app);
-
 
 
 const PORT = process.env.PORT || 8001;
@@ -69,15 +163,17 @@ app.use("/services",services);
 app.use("/transactions", Transactions);
 app.use("/user", User);
 app.use("/login", UserLogIn)
-app.use("/hospital", hospitals)
-// app.get("/get-name", async (req, res) => {
-//   try {
-//     const name = await contract.name();
-//     res.json({ name });
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// });
+
+
+app.get('/get-payment/:id', async (req, res) => {
+  try {
+    const C = req.params.id;
+    const payment = await contract.getPayment(paymentId);
+    res.json({ payment });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 
 

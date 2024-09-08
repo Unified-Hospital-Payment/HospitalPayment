@@ -36,6 +36,42 @@
       "artifacts": [
         "MyContract"
       ]
+    },
+    "/home/neematrasheed/HospitalPayment/HospitalPayment/back-end/contracts/payment.sol": {
+      "lastModificationDate": 1725722478954,
+      "contentHash": "2436fc10638a39859a5a0a035d9cc4b5",
+      "sourceName": "contracts/payment.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "Payments"
+      ]
     }
   }
 }
