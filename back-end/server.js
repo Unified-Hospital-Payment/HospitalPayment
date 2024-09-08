@@ -140,6 +140,7 @@ const services = require("./API/Routes/services");
 const Transactions = require("./API/Routes/transactions");
 const User = require("./API/Routes/user");
 const UserLogIn = require("./API/Routes/userLogIn");
+const category = require("./API/Routes/category")
 const app = express();
 const server = http.createServer(app);
 
@@ -163,6 +164,7 @@ app.use("/services",services);
 app.use("/transactions", Transactions);
 app.use("/user", User);
 app.use("/login", UserLogIn)
+app.use("/category", category)
 
 
 app.get('/get-payment/:id', async (req, res) => {

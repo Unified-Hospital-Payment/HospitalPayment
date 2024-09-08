@@ -52,7 +52,7 @@ model payments {
   service_id                      Int?
   amount                          Decimal        @db.Decimal(10, 2)
   payment_status                  String         @db.VarChar(50)
-  transaction_id                  String         @unique @db.VarChar(255)
+  transaction_id                  String?        @unique @db.VarChar(255)
   created_at                      DateTime?      @default(now()) @db.Timestamp(6)
   updated_at                      DateTime?      @default(now()) @db.Timestamp(6)
   doctor_id                       Int
@@ -83,7 +83,9 @@ model services {
   created_at                      DateTime?  @default(now()) @db.Timestamp(6)
   updated_at                      DateTime?  @default(now()) @db.Timestamp(6)
   doctor_id                       Int
+  category_id                     Int?
   payments                        payments[]
+  category                        category?  @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   users_services_doctor_idTousers users      @relation("services_doctor_idTousers", fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   hospitals                       hospitals? @relation(fields: [hospital_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   users_services_idTousers        users      @relation("services_idTousers", fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -120,4 +122,10 @@ model users {
   services_services_doctor_idTousers                                      services[]                   @relation("services_doctor_idTousers")
   services_services_idTousers                                             services?                    @relation("services_idTousers")
   hospitals                                                               hospitals?                   @relation(fields: [hospital_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model category {
+  id       Int        @id @default(autoincrement())
+  name     String?    @db.VarChar
+  services services[]
 }

@@ -6,7 +6,9 @@ async function addServices(req, res, next){
             hospital_id ,
             name,
             description,
-            price 
+            price,
+            category_id
+
         } = req.body
 
 
@@ -15,7 +17,8 @@ async function addServices(req, res, next){
             hospital_id ,
             name,
             description,
-            price 
+            price,
+            category_id
             }
         });
         return res.status(201).json(doc); 

@@ -1,7 +1,6 @@
 const prisma=require("../../DB/Prisma")
 const bcrypt = require('bcrypt');
 
-const { generateAccessToken } = require("./../Auth");
 
 const Login = async (req, res, next) => {
   try {
@@ -36,9 +35,8 @@ const Login = async (req, res, next) => {
 
     user.password = "#############";
 
-    let token = generateAccessToken(user);
 
-    return res.status(200).json({ ...user, token });
+    return res.status(200).json({ ...user});
   } catch (e) {
     next(e);
   }
