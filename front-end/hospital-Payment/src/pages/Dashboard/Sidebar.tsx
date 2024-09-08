@@ -21,13 +21,13 @@ const Sidebar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/dashboard/transactions" className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700 transition-colors duration-200">
+              <Link to="/dashboard/view-transactions" className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700 transition-colors duration-200">
                 <FaList className="text-xl" />
                 <span>View All Transactions</span>
               </Link>
             </li>
             <li>
-              <Link to="/dashboard/services" className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700 transition-colors duration-200">
+              <Link to="/dashboard/view-services" className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700 transition-colors duration-200">
                 <FaHome className="text-xl" />
                 <span>View All Services</span>
               </Link>

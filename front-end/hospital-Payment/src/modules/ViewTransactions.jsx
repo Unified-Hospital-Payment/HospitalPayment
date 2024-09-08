@@ -1,46 +1,43 @@
 import { useState, useEffect } from 'react';
+import { fetchAllTransactions,fetchAllHospitals,getAllUsers,fetchAllServices } from '../api/api';
+
 
 const ViewTransactions = () => {
   const [transactions, setTransactions] = useState([]);
+  const [hospitals, setHospitals] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulating API call with dummy data
-    const dummyTransactions = [
-      {
-        id: 1,
-        payment_id: 101,
-        blockchain_txn_id: '0xabc123def456',
-        block_number: '123456',
-        timestamp: new Date(),
-        status: 'Completed',
-      },
-      {
-        id: 2,
-        payment_id: 102,
-        blockchain_txn_id: '0xdef789ghi012',
-        block_number: '789101',
-        timestamp: new Date(),
-        status: 'Pending',
-      },
-      {
-        id: 3,
-        payment_id: 103,
-        blockchain_txn_id: '0xghi345jkl678',
-        block_number: '111213',
-        timestamp: new Date(),
-        status: 'Failed',
-      },
-    ];
+    const fetchData = async () => {
+      try {
+        const [transactionsData, hospitalsData, usersData, servicesData] = await Promise.all([
+          fetchAllTransactions(),
+          fetchAllHospitals(),
+          getAllUsers(),
+          fetchAllServices()
+        ]);
 
-    // Simulate loading
-    setTimeout(() => {
-      setTransactions(dummyTransactions);
-      setLoading(false);
-    }, 1000);
+        setTransactions(transactionsData);
+        setHospitals(hospitalsData);
+        setUsers(usersData);
+        setServices(servicesData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   if (loading) return <p>Loading...</p>;
+
+  const getHospitalName = (id) => hospitals.find(hospital => hospital.id === id)?.name || 'N/A';
+  const getUserName = (id) => users.find(user => user.id === id)?.name || 'N/A';
+  const getServiceName = (id) => services.find(service => service.id === id)?.name || 'N/A';
 
   return (
     <div className="p-6">
@@ -57,24 +54,28 @@ const ViewTransactions = () => {
         <thead>
           <tr>
             <th className="py-2 px-4 border-b">ID</th>
-            <th className="py-2 px-4 border-b">Payment ID</th>
-            <th className="py-2 px-4 border-b">Blockchain Txn ID</th>
-            <th className="py-2 px-4 border-b">Block Number</th>
-            <th className="py-2 px-4 border-b">Timestamp</th>
-            <th className="py-2 px-4 border-b">Status</th>
+            <th className="py-2 px-4 border-b">User</th>
+            <th className="py-2 px-4 border-b">Hospital</th>
+            <th className="py-2 px-4 border-b">Service</th>
+            <th className="py-2 px-4 border-b">Amount</th>
+            <th className="py-2 px-4 border-b">Payment Status</th>
+            <th className="py-2 px-4 border-b">Transaction ID</th>
+            <th className="py-2 px-4 border-b">Created At</th>
+            <th className="py-2 px-4 border-b">Updated At</th>
           </tr>
         </thead>
         <tbody>
           {transactions.map((transaction) => (
             <tr key={transaction.id}>
               <td className="py-2 px-4 border-b">{transaction.id}</td>
-              <td className="py-2 px-4 border-b">{transaction.payment_id || 'N/A'}</td>
-              <td className="py-2 px-4 border-b">{transaction.blockchain_txn_id || 'N/A'}</td>
-              <td className="py-2 px-4 border-b">{transaction.block_number || 'N/A'}</td>
-              <td className="py-2 px-4 border-b">
-                {transaction.timestamp ? transaction.timestamp.toLocaleString() : 'N/A'}
-              </td>
-              <td className="py-2 px-4 border-b">{transaction.status}</td>
+              <td className="py-2 px-4 border-b">{getUserName(transaction.user_id)}</td>
+              <td className="py-2 px-4 border-b">{getHospitalName(transaction.hospital_id)}</td>
+              <td className="py-2 px-4 border-b">{getServiceName(transaction.service_id)}</td>
+              <td className="py-2 px-4 border-b">KES {transaction.amount}</td>
+              <td className="py-2 px-4 border-b">{transaction.payment_status}</td>
+              <td className="py-2 px-4 border-b">{transaction.transaction_id}</td>
+              <td className="py-2 px-4 border-b">{new Date(transaction.created_at).toLocaleString()}</td>
+              <td className="py-2 px-4 border-b">{new Date(transaction.updated_at).toLocaleString()}</td>
             </tr>
           ))}
         </tbody>

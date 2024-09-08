@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 export const useStore = create((set) => ({
-    userType: 'patient',
+    userType: 'super_admin',
     setUserType: (role) => set({ userType: role }),
 
     userId: null,

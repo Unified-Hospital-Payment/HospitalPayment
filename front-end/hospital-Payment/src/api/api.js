@@ -85,3 +85,13 @@ export const addPatientConsultation = async (data) => {
     throw error;  // Rethrow the error to be handled by the calling code
   }
 };
+
+// api.js
+export const fetchAllTransactions = async () => {
+  try {
+    const response = await axios.get(`${APP_URL}/payments`);
+    return response.data;
+  } catch (error) {
+    throw new Error('Error fetching transactions: ' + error.message);
+  }
+};
